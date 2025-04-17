@@ -5,18 +5,78 @@ const statusDiv = document.getElementById("status");
 const sourceCanvas = document.getElementById("source-canvas");
 const croppedCanvas = document.getElementById("cropped-canvas");
 const finalCanvas = document.getElementById("final-canvas");
-const previewCanvas = document.getElementById("preview-canvas"); // Preview canvas
+const previewCanvas = document.getElementById("preview-canvas");
+const previewHeading = document.getElementById("preview-heading");
 
 const sourceCtx = sourceCanvas.getContext("2d");
 const croppedCtx = croppedCanvas.getContext("2d");
 const finalCtx = finalCanvas.getContext("2d");
-const previewCtx = previewCanvas.getContext("2d"); // Preview context
+const previewCtx = previewCanvas.getContext("2d");
 
 const FINAL_SIZE = 1000;
 const MARGIN = 180;
 const TARGET_CONTENT_SIZE = FINAL_SIZE - 2 * MARGIN; // 1000 - 360 = 640
 
-// --- Drag and Drop Event Handlers ---
+// Hide preview canvas initially
+previewCanvas.style.display = "none";
+
+// --- Material Design Interactive Elements ---
+// Ripple effect for buttons
+function createRipple(event) {
+  const button = event.currentTarget;
+  const ripple = document.createElement("span");
+  const rect = button.getBoundingClientRect();
+
+  const size = Math.max(rect.width, rect.height) * 2;
+  const x = event.clientX - rect.left - size / 2;
+  const y = event.clientY - rect.top - size / 2;
+
+  ripple.classList.add("ripple");
+  ripple.style.width = ripple.style.height = `${size}px`;
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+
+  button.appendChild(ripple);
+
+  // Remove ripple after animation completes
+  ripple.addEventListener("animationend", () => {
+    ripple.remove();
+  });
+}
+
+// Add ripple effect to all MD buttons
+document.querySelectorAll(".md-button").forEach((button) => {
+  button.addEventListener("mousedown", createRipple);
+
+  // Add click animation
+  button.addEventListener("mousedown", () => {
+    button.classList.add("clicked");
+  });
+
+  button.addEventListener("mouseup", () => {
+    setTimeout(() => button.classList.remove("clicked"), 150);
+  });
+
+  button.addEventListener("mouseleave", () => {
+    button.classList.remove("clicked");
+  });
+});
+
+// Add click animation to drop zone
+dropZone.addEventListener("mousedown", () => {
+  dropZone.classList.add("clicked");
+});
+
+dropZone.addEventListener("mouseup", () => {
+  setTimeout(() => dropZone.classList.remove("clicked"), 150);
+});
+
+dropZone.addEventListener("mouseleave", () => {
+  dropZone.classList.remove("clicked");
+});
+
+// --- Event Handlers ---
+// Drag and drop event handlers
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault(); // Prevent default browser behavior
   dropZone.classList.add("dragover");
@@ -29,13 +89,13 @@ dropZone.addEventListener("dragleave", () => {
 dropZone.addEventListener("drop", (e) => {
   e.preventDefault(); // Prevent default browser behavior
   dropZone.classList.remove("dragover");
-  statusDiv.textContent = "Processing...";
+  updateStatus("Processing...", true);
 
   const files = e.dataTransfer.files;
   if (files.length > 0) {
     handleFile(files[0]);
   } else {
-    statusDiv.textContent = "No file dropped.";
+    updateStatus("No file dropped.");
   }
 });
 
@@ -47,7 +107,7 @@ browseButton.addEventListener("click", () => {
 fileInput.addEventListener("change", (e) => {
   const files = e.target.files;
   if (files.length > 0) {
-    statusDiv.textContent = "Processing...";
+    updateStatus("Processing...", true);
     handleFile(files[0]);
   }
 });
@@ -55,7 +115,7 @@ fileInput.addEventListener("change", (e) => {
 // --- Paste Event Handler (Ctrl+V) ---
 document.addEventListener("paste", (e) => {
   e.preventDefault();
-  statusDiv.textContent = "Processing pasted image...";
+  updateStatus("Processing pasted image...", true);
 
   const items = e.clipboardData.items;
 
@@ -70,16 +130,24 @@ document.addEventListener("paste", (e) => {
     }
   }
 
-  statusDiv.textContent = "No image found in pasted content.";
+  updateStatus("No image found in pasted content.");
 });
 
-// Add paste instruction to UI
-dropZone.innerHTML += "<p><small>or press Ctrl+V to paste an image</small></p>";
+// --- Status Updates with Animation ---
+function updateStatus(message, isProcessing = false) {
+  statusDiv.textContent = message;
+
+  if (isProcessing) {
+    statusDiv.classList.add("processing");
+  } else {
+    statusDiv.classList.remove("processing");
+  }
+}
 
 // --- File Handling ---
 function handleFile(file) {
   if (!file.type.startsWith("image/")) {
-    statusDiv.textContent = "Error: Dropped file is not an image.";
+    updateStatus("Error: Dropped file is not an image.");
     return;
   }
 
@@ -94,13 +162,13 @@ function handleFile(file) {
       processImage(img, originalFilename);
     };
     img.onerror = function () {
-      statusDiv.textContent = "Error: Could not load image.";
+      updateStatus("Error: Could not load image.");
     };
     img.src = e.target.result; // Set image source to the loaded file data
   };
 
   reader.onerror = function () {
-    statusDiv.textContent = "Error: Could not read file.";
+    updateStatus("Error: Could not read file.");
   };
 
   reader.readAsDataURL(file); // Read the file as a Data URL
@@ -109,17 +177,18 @@ function handleFile(file) {
 // --- Image Processing Pipeline ---
 function processImage(img, originalFilename) {
   console.log("Original dimensions:", img.width, img.height);
-  statusDiv.textContent = "Cropping image...";
+  updateStatus("Cropping image...", true);
 
   // 1. Crop to Content
   const cropData = cropToContent(img);
   if (!cropData) {
-    statusDiv.textContent =
-      "Error: Could not find content in the image (is it all white?).";
+    updateStatus(
+      "Error: Could not find content in the image (is it all white?)."
+    );
     return;
   }
   console.log("Cropped dimensions:", cropData.width, cropData.height);
-  statusDiv.textContent = "Creating final image...";
+  updateStatus("Creating final image...", true);
 
   // 2. Create Final Image (Background + Resized/Placed Cropped Image)
   createFinalImage(cropData);
@@ -130,7 +199,14 @@ function processImage(img, originalFilename) {
   // 4. Trigger Download
   downloadImage(originalFilename);
 
-  statusDiv.textContent = "Processing complete! Downloading...";
+  updateStatus("Processing complete! Downloading...");
+
+  // Show preview with animation
+  previewHeading.style.display = "block";
+  previewCanvas.style.display = "block";
+  setTimeout(() => {
+    previewCanvas.classList.add("show");
+  }, 50);
 }
 
 // --- Step 1: Crop to Content ---
@@ -218,7 +294,7 @@ function cropToContent(img) {
       "Error getting image data (maybe CORS issue if loading from external URL):",
       error
     );
-    statusDiv.textContent = "Error processing image data.";
+    updateStatus("Error processing image data.");
     return null;
   }
 }
