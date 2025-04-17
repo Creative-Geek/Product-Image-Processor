@@ -1,0 +1,63 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+h1,
+h2 {
+  color: #333;
+}
+
+#drop-zone {
+  width: 80%;
+  max-width: 600px;
+  height: 200px;
+  border: 3px dashed #ccc;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #aaa;
+  background-color: #fff;
+  margin-bottom: 20px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+#drop-zone.dragover {
+  border-color: #3498db;
+  background-color: #eaf5fc;
+}
+
+#browse-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+#browse-button:hover {
+  background-color: #2980b9;
+}
+
+#status {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #555;
+}
+
+#preview-canvas {
+  margin-top: 10px;
+  background-color: #fff; /* Give preview a background */
+  max-width: 90%; /* Ensure preview scales down on smaller screens */
+  height: auto; /* Maintain aspect ratio */
+}

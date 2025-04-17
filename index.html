@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Processor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Product Image Processor</h1>
+    <p>Drop your product image (with a white background) below.</p>
+
+    <div id="drop-zone">
+      <p>Drag & Drop Image Here</p>
+      <p>or</p>
+      <input
+        type="file"
+        id="file-input"
+        accept="image/*"
+        style="display: none"
+      />
+      <button id="browse-button">Browse Files</button>
+    </div>
+
+    <div id="status">Waiting for image...</div>
+
+    <!-- Canvas elements used for processing (can be hidden) -->
+    <canvas id="source-canvas" style="display: none"></canvas>
+    <canvas id="cropped-canvas" style="display: none"></canvas>
+    <canvas id="final-canvas" style="display: none"></canvas>
+
+    <h2>Preview (Optional):</h2>
+    <canvas
+      id="preview-canvas"
+      width="500"
+      height="500"
+      style="border: 1px solid #ccc"
+    ></canvas>
+
+    <script src="script.js"></script>
+  </body>
+</html>
