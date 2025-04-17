@@ -52,6 +52,30 @@ fileInput.addEventListener("change", (e) => {
   }
 });
 
+// --- Paste Event Handler (Ctrl+V) ---
+document.addEventListener("paste", (e) => {
+  e.preventDefault();
+  statusDiv.textContent = "Processing pasted image...";
+
+  const items = e.clipboardData.items;
+
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf("image") !== -1) {
+      const blob = items[i].getAsFile();
+      // Generate a pseudo-filename for pasted content
+      blob.name =
+        "pasted-image-" + new Date().toISOString().replace(/:/g, "-") + ".jpg";
+      handleFile(blob);
+      return;
+    }
+  }
+
+  statusDiv.textContent = "No image found in pasted content.";
+});
+
+// Add paste instruction to UI
+dropZone.innerHTML += "<p><small>or press Ctrl+V to paste an image</small></p>";
+
 // --- File Handling ---
 function handleFile(file) {
   if (!file.type.startsWith("image/")) {
