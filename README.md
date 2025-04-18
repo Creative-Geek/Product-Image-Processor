@@ -15,13 +15,21 @@ A simple web application for quickly processing product images for e-commerce we
 
 ## How to Use
 
-1. Open `index.html` in your web browser
+1. Open the the [Web App](https://image-resizer-pearl.vercel.app)
+   - You can also run it locally by cloning the repository and opening `index.html` in your browser.
+   - Make sure to have a local server running if you want to test the drag-and-drop functionality.
+   - For example, you can use Python's built-in HTTP server:
+     ```bash
+     python -m http.server
+     ```
+     Then navigate to `http://localhost:8000` in your browser.
 2. Add your image using one of three methods:
    - Drag and drop an image file onto the drop zone
    - Click "BROWSE FILES" to select an image
    - Copy an image to your clipboard and press Ctrl+V
 3. The image will be automatically processed:
-   - White background will be detected and cropped
+   - White background will be detected and cropped to the content
+   - The product will be centered in the frame
    - Image will be resized to fit within a 640x640px area
    - A 180px margin will be added on all sides
    - Final 1000x1000px image will be created
