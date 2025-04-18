@@ -15,7 +15,7 @@ A simple web application for quickly processing product images for e-commerce we
 
 ## How to Use
 
-1. Open the the [Web App](https://image-resizer-pearl.vercel.app)
+1. Open the the [Web App](https://product-image-processor.vercel.app)
    - You can also run it locally by cloning the repository and opening `index.html` in your browser.
    - Make sure to have a local server running if you want to test the drag-and-drop functionality.
    - For example, you can use Python's built-in HTTP server:
