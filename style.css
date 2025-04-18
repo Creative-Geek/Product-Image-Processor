@@ -5,184 +5,26 @@
   --md-on-primary: #ffffff;
   --md-secondary: #9c27b0;
   --md-surface: #fffbff;
-  --md-surface-container: #f3edf7;
-  --md-surface-variant: #e7e0ec;
+  --md-surface-container: #f3edf7; /* Used for modal background */
+  --md-surface-variant: #e7e0ec; /* Used for slider track, disabled states */
   --md-on-surface: #1c1b1f;
-  --md-on-surface-variant: #49454f;
-  --md-outline: #79747e;
+  --md-on-surface-variant: #49454f; /* Used for labels, icons */
+  --md-outline: #79747e; /* Used for input borders */
   --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
   --md-elevation-2: 0 2px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
   --md-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
-  --md-radius-small: 8px;
-  --md-radius-medium: 16px;
-  --md-radius-large: 28px;
-  --md-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --md-radius-small: 4px; /* M3 uses smaller radius */
+  --md-radius-medium: 12px;
+  --md-radius-large: 28px; /* For modal dialog */
+  --md-radius-full: 999px; /* For slider thumb */
+  --md-transition: all 0.2s ease-in-out; /* Slightly faster M3 transition */
+  --md-slider-track-height: 4px;
+  --md-slider-thumb-size: 20px;
+  --md-slider-thumb-hover-size: 28px; /* Thumb halo */
+  --md-slider-thumb-focus-size: 40px; /* Focus halo */
 }
 
-/* Header Styles */
-.app-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px; /* Adjust spacing */
-}
-
-.app-header h1 {
-  margin-bottom: 0; /* Remove default margin */
-}
-
-/* Icon Button Styles */
-.md-icon-button {
-  background: none;
-  border: none;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--md-on-surface-variant);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  transition: var(--md-transition);
-}
-
-.md-icon-button:hover {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-
-.md-icon-button:active {
-  background-color: rgba(0, 0, 0, 0.12);
-}
-
-.md-icon-button .material-symbols-rounded {
-  font-size: 24px;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.32);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.modal-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-dialog {
-  background-color: var(--md-surface-container);
-  color: var(--md-on-surface);
-  border-radius: var(--md-radius-large);
-  padding: 24px;
-  box-shadow: var(--md-elevation-3);
-  width: 90%;
-  max-width: 400px;
-  transform: scale(0.95);
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.modal-overlay.visible .modal-dialog {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 22px; /* Slightly smaller for modal */
-}
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.setting-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.setting-item label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--md-on-surface-variant);
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.setting-item input[type="number"],
-.setting-item input[type="color"] {
-  flex-grow: 1;
-  padding: 10px 12px;
-  border: 1px solid var(--md-outline);
-  border-radius: var(--md-radius-small);
-  background-color: var(--md-surface);
-  color: var(--md-on-surface);
-  font-size: 16px;
-  transition: var(--md-transition);
-}
-
-.setting-item input[type="number"]:focus,
-.setting-item input[type="color"]:focus {
-  outline: none;
-  border-color: var(--md-primary);
-  box-shadow: 0 0 0 1px var(--md-primary);
-}
-
-.setting-item input[type="color"] {
-  padding: 4px; /* Adjust padding for color input */
-  height: 40px; /* Match height */
-  cursor: pointer;
-}
-
-.reset-button {
-  /* Use icon button styles */
-  background: none;
-  border: none;
-  padding: 6px;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--md-on-surface-variant);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--md-transition);
-}
-
-.reset-button:hover {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-
-.reset-button .material-symbols-rounded {
-  font-size: 20px;
-}
-
+/* General Body Styles */
 body {
   font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
   display: flex;
@@ -193,7 +35,7 @@ body {
   color: var(--md-on-surface);
   margin: 0;
   transition: var(--md-transition);
-  max-width: 1000px;
+  max-width: 800px; /* Limit max width */
   margin: 0 auto;
 }
 
@@ -204,12 +46,12 @@ h2 {
 }
 
 h1 {
-  font-size: 32px;
-  margin-bottom: 8px;
+  font-size: 28px; /* Slightly smaller h1 */
+  margin-bottom: 0; /* Removed default margin */
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 22px;
   margin-top: 32px;
   margin-bottom: 16px;
 }
@@ -217,27 +59,81 @@ h2 {
 p {
   color: var(--md-on-surface-variant);
   margin-bottom: 24px;
+  text-align: center;
+  max-width: 600px;
 }
 
+/* Header Styles */
+.app-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* Adjust spacing */
+}
+
+/* Icon Button Styles (Used for Settings, Close, Reset) */
+.md-icon-button,
+.reset-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--md-on-surface-variant);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden; /* Needed for ripple */
+  transition: background-color 0.15s ease-out;
+  flex-shrink: 0; /* Prevent shrinking in flex layouts */
+  width: 40px; /* M3 touch target size */
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.md-icon-button:hover,
+.reset-button:hover {
+  background-color: rgba(0, 0, 0, 0.08); /* Use subtle hover */
+}
+
+.md-icon-button:active,
+.reset-button:active {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.md-icon-button .material-symbols-rounded,
+.reset-button .material-symbols-rounded {
+  font-size: 24px;
+  display: block; /* Prevent extra space */
+}
+
+/* Drop Zone Styles */
 #drop-zone {
   width: 100%;
   max-width: 100%;
-  height: 300px;
-  border: 2px dashed #ccc;
-  border-radius: var(--md-radius-large);
+  height: 250px; /* Slightly smaller */
+  border: 2px dashed var(--md-outline);
+  border-radius: var(--md-radius-medium); /* M3 medium radius */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: var(--md-on-surface-variant);
-  background-color: #f5f1f8;
+  background-color: var(--md-surface-container);
   margin-bottom: 24px;
   transition: var(--md-transition);
-  box-shadow: var(--md-elevation-1);
+  transition-property: border-color, transform, box-shadow, background-color;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+}
+.drop-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  color: var(--md-primary);
 }
 
 #drop-zone::after {
@@ -256,8 +152,9 @@ p {
 
 #drop-zone.dragover {
   border-color: var(--md-primary);
-  transform: scale(1.01);
-  box-shadow: var(--md-elevation-2);
+  background-color: #e8def8; /* Lighter purple on drag */
+  /* transform: scale(1.01); No scale needed */
+  box-shadow: var(--md-elevation-1);
 }
 
 #drop-zone.dragover::after {
@@ -266,6 +163,7 @@ p {
 
 #drop-zone.clicked {
   transform: scale(0.99);
+  transition: transform 0.1s ease-out;
 }
 
 #drop-zone p,
@@ -274,23 +172,39 @@ p {
   z-index: 2;
   margin: 8px 0;
 }
+#drop-zone p {
+  margin-bottom: 8px;
+}
 
+.paste-hint {
+  font-size: 12px; /* Smaller hint */
+  opacity: 0.8;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* Standard Button Style (Browse Files) */
 .md-button {
   position: relative;
-  padding: 12px 32px;
-  margin-top: 24px;
+  padding: 10px 24px; /* M3 Button Padding */
+  margin-top: 16px;
   cursor: pointer;
   background-color: var(--md-primary);
   color: var(--md-on-primary);
   border: none;
-  border-radius: var(--md-radius-small);
-  font-size: 16px;
+  border-radius: var(--md-radius-full); /* M3 uses full radius */
+  font-size: 14px; /* M3 font size */
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1.25px;
+  text-transform: none; /* M3 often uses sentence case */
+  letter-spacing: 0.1px;
   box-shadow: var(--md-elevation-1);
   transition: var(--md-transition);
+  transition-property: background-color, box-shadow, transform;
   overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px; /* M3 touch target */
 }
 
 .md-button:hover {
@@ -299,16 +213,17 @@ p {
 }
 
 .md-button:active {
-  transform: scale(0.98);
+  transform: scale(0.98); /* Subtle click feedback */
 }
 
-.md-button .ripple {
+/* Ripple Animation */
+.ripple {
   position: absolute;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
   transform: scale(0);
   animation: ripple 0.6s linear;
   pointer-events: none;
+  /* Ripple color set in JS based on button type */
 }
 
 @keyframes ripple {
@@ -318,61 +233,270 @@ p {
   }
 }
 
+/* Status Indicator */
 #status {
   width: 100%;
   max-width: 400px;
   margin-top: 20px;
-  padding: 16px;
+  padding: 12px 16px;
   font-weight: 500;
   color: var(--md-on-surface-variant);
-  background-color: #f5f1f8;
+  background-color: var(--md-surface-container);
   border-radius: var(--md-radius-medium);
   transition: var(--md-transition);
   box-shadow: var(--md-elevation-1);
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 #status.processing {
-  animation: pulse 1.5s infinite;
+  animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(103, 80, 164, 0.4);
+    box-shadow: 0 0 0 0 rgba(103, 80, 164, 0.3);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(103, 80, 164, 0);
+    box-shadow: 0 0 0 8px rgba(103, 80, 164, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(103, 80, 164, 0);
   }
 }
 
+/* Preview Area */
 #preview-canvas {
   margin-top: 16px;
-  background-color: var(--md-surface);
+  background-color: var(--md-surface-variant); /* Match background */
   border-radius: var(--md-radius-medium);
-  max-width: 90%;
-  height: auto;
+  max-width: 90%; /* Responsive width */
+  height: auto; /* Maintain aspect ratio */
   box-shadow: var(--md-elevation-2);
-  transition: var(--md-transition);
-  transform: translateY(20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transform: translateY(10px) scale(0.98); /* Start slightly down and smaller */
   opacity: 0;
+  display: block; /* Keep in layout flow even when hidden */
 }
 
 #preview-canvas.show {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   opacity: 1;
 }
 
-.paste-hint {
-  font-size: 14px;
-  opacity: 0.8;
-  margin-top: 8px;
-  margin-bottom: 0;
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.32);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s; /* Delay visibility change */
 }
 
-.material-symbols-rounded {
+.modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.modal-dialog {
+  background-color: var(--md-surface-container);
+  color: var(--md-on-surface);
+  border-radius: var(--md-radius-large);
+  padding: 24px;
+  box-shadow: var(--md-elevation-3);
+  width: 90%;
+  max-width: 400px;
+  transform: scale(0.95) translateY(10px);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.modal-overlay.visible .modal-dialog {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px; /* More space */
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Spacing between setting items */
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Container for label + value */
+.slider-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px; /* Space between label and slider */
+}
+
+.setting-item label {
+  font-size: 14px;
+  font-weight: 500;
   color: var(--md-on-surface-variant);
+}
+
+.slider-value {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--md-on-surface-variant);
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between input and reset button */
+}
+
+/* Basic Input Styles (for color picker) */
+.setting-item input[type="color"] {
+  flex-grow: 1;
+  padding: 0; /* Remove padding for native picker */
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius-small);
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  height: 40px; /* Match height roughly */
+  cursor: pointer;
+  min-width: 50px; /* Ensure it doesn't collapse */
+}
+
+.setting-item input[type="color"]:focus {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 1px;
+}
+
+/* --- M3 Slider Styles --- */
+.slider-container {
+  gap: 16px; /* Space between slider and reset button */
+}
+
+input[type="range"] {
+  flex-grow: 1;
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 100%; /* Full width */
+  height: var(--md-slider-track-height);
+  background: var(--md-surface-variant); /* Default track color */
+  border-radius: var(--md-radius-full);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.1s ease-in-out; /* For dynamic track update */
+  /* margin: calc(var(--md-slider-thumb-size) / 2) 0; */
+  /* Center thumb vertically */
+}
+
+/* Webkit (Chrome, Safari, Edge) Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--md-slider-thumb-size);
+  height: var(--md-slider-thumb-size);
+  background: var(--md-primary);
+  border-radius: var(--md-radius-full);
+  border: none; /* No border needed */
+  cursor: pointer;
+  position: relative; /* For pseudo-elements */
+  transition: background-color 0.15s ease-out, transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+  box-shadow: var(--md-elevation-1); /* Subtle shadow */
+}
+
+/* Firefox Thumb */
+input[type="range"]::-moz-range-thumb {
+  width: var(--md-slider-thumb-size);
+  height: var(--md-slider-thumb-size);
+  background: var(--md-primary);
+  border-radius: var(--md-radius-full);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+  box-shadow: var(--md-elevation-1);
+}
+
+/* Hover State - Add a "halo" effect */
+input[type="range"]:hover::-webkit-slider-thumb::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--md-slider-thumb-hover-size);
+  height: var(--md-slider-thumb-hover-size);
+  background-color: var(--md-primary);
+  opacity: 0.12; /* M3 hover state opacity */
+  border-radius: 50%;
+  z-index: -1; /* Behind the thumb */
+}
+input[type="range"]:hover::-moz-range-thumb::before {
+  /* Similar styling for Firefox if possible, often harder */
+  /* Consider just scaling thumb slightly or changing color */
+}
+
+/* Active/Focus State - Larger halo */
+input[type="range"]:active::-webkit-slider-thumb,
+input[type="range"]:focus::-webkit-slider-thumb {
+  background-color: var(--md-primary-dark); /* Darken thumb on active */
+  transform: scale(1.1); /* Slightly enlarge thumb */
+  box-shadow: var(--md-elevation-2);
+}
+input[type="range"]:active::-webkit-slider-thumb::before,
+input[type="range"]:focus::-webkit-slider-thumb::before {
+  width: var(--md-slider-thumb-focus-size);
+  height: var(--md-slider-thumb-focus-size);
+  opacity: 0.18; /* M3 focus state opacity */
+}
+
+input[type="range"]:active::-moz-range-thumb,
+input[type="range"]:focus::-moz-range-thumb {
+  background-color: var(--md-primary-dark);
+  transform: scale(1.1);
+  box-shadow: var(--md-elevation-2);
+}
+
+/* Webkit Track Styles (Less crucial with background gradient) */
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: var(--md-slider-track-height);
+  cursor: pointer;
+  background: transparent; /* Let the input element background handle it */
+  border-radius: var(--md-radius-full);
+}
+
+/* Firefox Track Styles */
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: var(--md-slider-track-height);
+  cursor: pointer;
+  background: transparent; /* Let the input element background handle it */
+  border-radius: var(--md-radius-full);
 }
