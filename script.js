@@ -199,11 +199,13 @@ function processImage(img, originalFilename) {
   // 4. Trigger Download
   downloadImage(originalFilename);
 
-  updateStatus("Processing complete! Downloading...");
-
   // Show preview with animation
   previewHeading.style.display = "block";
   previewCanvas.style.display = "block";
+  
+  // Hide status message when preview is shown
+  statusDiv.style.display = "none";
+  
   setTimeout(() => {
     previewCanvas.classList.add("show");
   }, 50);
