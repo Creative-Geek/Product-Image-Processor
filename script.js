@@ -122,9 +122,10 @@ function updateSetting(key, value) {
   // Basic validation
   if (key === "finalSize") {
     value = Math.max(10, Math.min(10000, parseInt(value, 10) || DEFAULT_SETTINGS[key]));
-    // Removed rounding logic from here
   } else if (key === "marginPercentage") {
-    value = Math.max(0, Math.min(50, parseInt(value, 10) || DEFAULT_SETTINGS[key]));
+    // Allow zero values by checking if value is a number first
+    const numValue = parseInt(value, 10);
+    value = isNaN(numValue) ? DEFAULT_SETTINGS[key] : Math.max(0, Math.min(50, numValue));
   } else if (key === "backgroundColor") {
     // Basic hex color validation (allows 3, 6, 8 digits)
     if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
