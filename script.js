@@ -13,6 +13,8 @@ const settingsModal = document.getElementById("settings-modal");
 const closeSettingsButton = document.getElementById("close-settings-button");
 const finalSizeInput = document.getElementById("final-size");
 const finalSizeValueOutput = document.getElementById("final-size-value");
+const finalSizeNumberInput = document.getElementById("final-size-input");
+const finalSizeError = document.getElementById("final-size-error");
 const marginPercentageInput = document.getElementById("margin-percentage");
 const marginPercentageValueOutput = document.getElementById(
   "margin-percentage-value"
@@ -30,6 +32,7 @@ const DEFAULT_SETTINGS = {
   finalSize: 1000, // Square size
   marginPercentage: 18, // Margin as % of final size
   backgroundColor: "#ffffff",
+  autoDownload: true, // New setting for automatic download
 };
 
 // --- Settings Management ---
@@ -44,9 +47,9 @@ function loadSettings() {
       currentSettings = { ...DEFAULT_SETTINGS, ...parsedSettings };
       // Validate loaded settings (especially ranges)
       currentSettings.finalSize = Math.max(
-        512,
+        10, // Use correct min
         Math.min(
-          2048,
+          10000, // Use correct max
           parseInt(currentSettings.finalSize) || DEFAULT_SETTINGS.finalSize
         )
       );
@@ -58,6 +61,8 @@ function loadSettings() {
             DEFAULT_SETTINGS.marginPercentage
         )
       );
+      // Ensure autoDownload is a boolean
+      currentSettings.autoDownload = !!currentSettings.autoDownload;
     } catch (e) {
       console.error("Error parsing saved settings:", e);
       // Use defaults if parsing fails
@@ -78,30 +83,48 @@ function saveSettings() {
 
 function applySettingsToUI() {
   finalSizeInput.value = currentSettings.finalSize;
+  finalSizeNumberInput.value = currentSettings.finalSize;
   finalSizeValueOutput.textContent = `${currentSettings.finalSize} px`;
 
   marginPercentageInput.value = currentSettings.marginPercentage;
   marginPercentageValueOutput.textContent = `${currentSettings.marginPercentage} %`;
 
   backgroundColorInput.value = currentSettings.backgroundColor;
+  
+  // Set the auto-download toggle state
+  document.getElementById('auto-download').checked = currentSettings.autoDownload;
+
+  // Update reset button visibility
+  updateResetButtonVisibility();
 
   // Update slider track gradient dynamically (optional but nice)
   updateSliderTrack(finalSizeInput);
   updateSliderTrack(marginPercentageInput);
 }
 
+function updateResetButtonVisibility() {
+  // Check each setting against its default value
+  const finalSizeResetButton = document.querySelector('[data-setting="finalSize"]');
+  const marginPercentageResetButton = document.querySelector('[data-setting="marginPercentage"]');
+  const backgroundColorResetButton = document.querySelector('[data-setting="backgroundColor"]');
+
+  finalSizeResetButton.style.display = 
+    currentSettings.finalSize !== DEFAULT_SETTINGS.finalSize ? 'block' : 'none';
+  
+  marginPercentageResetButton.style.display = 
+    currentSettings.marginPercentage !== DEFAULT_SETTINGS.marginPercentage ? 'block' : 'none';
+  
+  backgroundColorResetButton.style.display = 
+    currentSettings.backgroundColor !== DEFAULT_SETTINGS.backgroundColor ? 'block' : 'none';
+}
+
 function updateSetting(key, value) {
   // Basic validation
   if (key === "finalSize") {
-    value = Math.max(
-      512,
-      Math.min(2048, parseInt(value, 10) || DEFAULT_SETTINGS[key])
-    );
+    value = Math.max(10, Math.min(10000, parseInt(value, 10) || DEFAULT_SETTINGS[key]));
+    // Removed rounding logic from here
   } else if (key === "marginPercentage") {
-    value = Math.max(
-      0,
-      Math.min(50, parseInt(value, 10) || DEFAULT_SETTINGS[key])
-    );
+    value = Math.max(0, Math.min(50, parseInt(value, 10) || DEFAULT_SETTINGS[key]));
   } else if (key === "backgroundColor") {
     // Basic hex color validation (allows 3, 6, 8 digits)
     if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
@@ -137,11 +160,39 @@ function updateSliderTrack(slider) {
 // --- Modal Logic ---
 function openSettingsModal() {
   applySettingsToUI(); // Ensure UI shows current settings when opened
+  clearFinalSizeError(); // Clear any previous errors when opening
   settingsModalOverlay.classList.add("visible");
 }
 
 function closeSettingsModal() {
+  // **Validation before closing**
+  const rawValue = finalSizeNumberInput.value;
+  const value = parseInt(rawValue, 10);
+
+  if (isNaN(value) || value < 10 || value > 10000) {
+    showFinalSizeError("Must be 10 - 10000 px");
+    return; // Prevent closing
+  }
+
+  // If valid, ensure the potentially manually typed value is saved
+  clearFinalSizeError();
+  updateSetting("finalSize", value); // This also updates UI and saves
+
+  // Proceed with closing
   settingsModalOverlay.classList.remove("visible");
+}
+
+// --- Error Handling for Final Size ---
+function showFinalSizeError(message) {
+  finalSizeError.textContent = message;
+  finalSizeError.style.display = "block";
+  finalSizeNumberInput.classList.add("error");
+}
+
+function clearFinalSizeError() {
+  finalSizeError.textContent = "";
+  finalSizeError.style.display = "none";
+  finalSizeNumberInput.classList.remove("error");
 }
 
 // --- Event Listeners for Settings ---
@@ -150,18 +201,55 @@ closeSettingsButton.addEventListener("click", closeSettingsModal);
 settingsModalOverlay.addEventListener("click", (e) => {
   // Close if clicked outside the modal dialog itself
   if (e.target === settingsModalOverlay) {
-    closeSettingsModal();
+    // **Also validate when clicking outside**
+    const rawValue = finalSizeNumberInput.value;
+    const value = parseInt(rawValue, 10);
+
+    if (isNaN(value) || value < 10 || value > 10000) {
+      showFinalSizeError("Must be 10 - 10000 px");
+      return; // Prevent closing
+    }
+    // If valid, ensure value is saved before closing
+    clearFinalSizeError();
+    updateSetting("finalSize", value);
+    closeSettingsModal(); // Call the original close function (which now handles valid state)
   }
 });
 
-// Use 'input' event for sliders for real-time updates
+// Add event listeners for final size inputs
 finalSizeInput.addEventListener("input", (e) => {
-  updateSetting("finalSize", e.target.value);
-  updateSliderTrack(e.target); // Update track gradient live
+  clearFinalSizeError(); // Clear error when slider moves
+  const value = parseInt(e.target.value);
+  if (!isNaN(value)) {
+    // Update setting directly, validation happens in updateSetting
+    updateSetting("finalSize", value);
+    // Sync number input
+    finalSizeNumberInput.value = value;
+  }
 });
+
+// Add back margin percentage event listener
 marginPercentageInput.addEventListener("input", (e) => {
-  updateSetting("marginPercentage", e.target.value);
-  updateSliderTrack(e.target); // Update track gradient live
+  const value = parseInt(e.target.value);
+  if (!isNaN(value)) {
+    updateSetting("marginPercentage", value);
+    updateSliderTrack(e.target); // Update track gradient live
+  }
+});
+
+finalSizeNumberInput.addEventListener("input", (e) => {
+  clearFinalSizeError(); // Clear error as soon as user types
+  const rawValue = e.target.value;
+  const value = parseInt(rawValue, 10);
+
+  // Only update slider if the typed value is a valid number within range
+  if (!isNaN(value) && value >= 10 && value <= 10000) {
+    finalSizeInput.value = value;
+    // We only call updateSetting when the slider is moved or modal is closed successfully
+    // Or should we update immediately if valid? Let's update immediately for better UX.
+    updateSetting("finalSize", value);
+  }
+  // Allow user to type freely, validation happens on close
 });
 
 // Use 'change' for color picker (less frequent updates needed)
@@ -180,6 +268,11 @@ resetButtonElements.forEach((button) => {
         updateSliderTrack(marginPercentageInput);
     }
   });
+});
+
+// Add event listener for auto-download toggle
+document.getElementById('auto-download').addEventListener('change', (e) => {
+  updateSetting('autoDownload', e.target.checked);
 });
 
 // Load settings on initial script load
@@ -382,8 +475,18 @@ function processImage(img, originalFilename) {
   // 3. Draw Preview
   drawPreview();
 
-  // 4. Trigger Download
-  downloadImage(originalFilename);
+  // 4. Handle download based on settings
+  if (currentSettings.autoDownload) {
+    downloadImage(originalFilename);
+  } else {
+    // Show download button
+    const downloadButton = document.getElementById('download-button');
+    downloadButton.style.display = 'block';
+    downloadButton.onclick = () => {
+      downloadImage(originalFilename);
+      downloadButton.style.display = 'none';
+    };
+  }
 
   // Show preview with animation
   showPreview();

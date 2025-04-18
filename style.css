@@ -394,6 +394,51 @@ p {
   outline-offset: 1px;
 }
 
+/* Number Input Styles */
+.number-input {
+  width: 80px;
+  height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius-small);
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  font-size: 14px;
+  text-align: center;
+  margin-left: 8px;
+}
+
+.number-input:focus {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 1px;
+}
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+  opacity: 1;
+  height: 24px;
+}
+
+/* Error Message Styles */
+.error-message {
+  color: #b00020; /* Material Design error color */
+  font-size: 12px;
+  margin-top: 4px;
+  display: block; /* Use block for positioning */
+  width: 100%; /* Span full width below input */
+  text-align: right; /* Align error message relative to input group */
+  padding-right: 50px; /* Adjust padding to align near the input */
+}
+
+/* Input Error State */
+.number-input.error {
+  border-color: #b00020;
+}
+
+.number-input.error:focus {
+  outline-color: #b00020;
+}
+
 /* --- M3 Slider Styles --- */
 .slider-container {
   gap: 16px; /* Space between slider and reset button */
@@ -457,10 +502,10 @@ input[type="range"]:hover::-webkit-slider-thumb::before {
   border-radius: 50%;
   z-index: -1; /* Behind the thumb */
 }
-input[type="range"]:hover::-moz-range-thumb::before {
-  /* Similar styling for Firefox if possible, often harder */
-  /* Consider just scaling thumb slightly or changing color */
-}
+/* input[type="range"]:hover::-moz-range-thumb::before { */
+/* Similar styling for Firefox if possible, often harder */
+/* Consider just scaling thumb slightly or changing color */
+/* } */
 
 /* Active/Focus State - Larger halo */
 input[type="range"]:active::-webkit-slider-thumb,
@@ -497,4 +542,77 @@ input[type="range"]::-moz-range-track {
   cursor: pointer;
   background: transparent; /* Let the input element background handle it */
   border-radius: var(--md-radius-full);
+}
+
+/* Toggle Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+  margin-left: auto;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--md-surface-variant);
+  transition: .2s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+  box-shadow: var(--md-elevation-1);
+}
+
+input:checked + .slider {
+  background-color: var(--md-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* Download Button Styles */
+#download-button {
+  display: none;
+  margin-top: 16px;
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: var(--md-radius-full);
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--md-transition);
+  box-shadow: var(--md-elevation-1);
+}
+
+#download-button:hover {
+  background-color: var(--md-primary-light);
+  box-shadow: var(--md-elevation-2);
+}
+
+#download-button:active {
+  transform: scale(0.98);
 }
