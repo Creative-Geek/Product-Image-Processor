@@ -20,6 +20,9 @@ const TARGET_CONTENT_SIZE = FINAL_SIZE - 2 * MARGIN; // 1000 - 360 = 640
 // Hide preview canvas initially
 previewCanvas.style.display = "none";
 
+// Hide the initial "Waiting for image..." message
+statusDiv.style.display = "none";
+
 // --- Material Design Interactive Elements ---
 // Ripple effect for buttons
 function createRipple(event) {
@@ -135,6 +138,8 @@ document.addEventListener("paste", (e) => {
 
 // --- Status Updates with Animation ---
 function updateStatus(message, isProcessing = false) {
+  // Make status visible when we need to display a message
+  statusDiv.style.display = "block";
   statusDiv.textContent = message;
 
   if (isProcessing) {
@@ -202,10 +207,10 @@ function processImage(img, originalFilename) {
   // Show preview with animation
   previewHeading.style.display = "block";
   previewCanvas.style.display = "block";
-  
+
   // Hide status message when preview is shown
   statusDiv.style.display = "none";
-  
+
   setTimeout(() => {
     previewCanvas.classList.add("show");
   }, 50);
