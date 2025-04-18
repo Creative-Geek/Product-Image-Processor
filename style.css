@@ -410,7 +410,7 @@ input[type="range"] {
   outline: none;
   cursor: pointer;
   transition: background 0.1s ease-in-out; /* For dynamic track update */
-  /* margin: calc(var(--md-slider-thumb-size) / 2) 0; */
+  margin: calc(var(--md-slider-thumb-size) / 2) 0;
   /* Center thumb vertically */
 }
 
@@ -486,7 +486,6 @@ input[type="range"]:focus::-moz-range-thumb {
 /* Webkit Track Styles (Less crucial with background gradient) */
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
-  height: var(--md-slider-track-height);
   cursor: pointer;
   background: transparent; /* Let the input element background handle it */
   border-radius: var(--md-radius-full);
@@ -495,7 +494,6 @@ input[type="range"]::-webkit-slider-runnable-track {
 /* Firefox Track Styles */
 input[type="range"]::-moz-range-track {
   width: 100%;
-  height: var(--md-slider-track-height);
   cursor: pointer;
   background: transparent; /* Let the input element background handle it */
   border-radius: var(--md-radius-full);
