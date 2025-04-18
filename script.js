@@ -67,7 +67,6 @@ function loadSettings() {
     currentSettings = { ...DEFAULT_SETTINGS };
   }
   applySettingsToUI();
-  console.log("Settings loaded:", currentSettings);
 }
 
 function saveSettings() {
@@ -75,7 +74,6 @@ function saveSettings() {
     "imageProcessorSettings",
     JSON.stringify(currentSettings)
   );
-  console.log("Settings saved:", currentSettings);
 }
 
 function applySettingsToUI() {
@@ -365,7 +363,6 @@ function handleFile(file) {
 
 // --- Image Processing Pipeline ---
 function processImage(img, originalFilename) {
-  console.log("Original dimensions:", img.width, img.height);
   updateStatus("Cropping image...", true);
   hidePreview(); // Hide previous preview if any
 
@@ -377,7 +374,6 @@ function processImage(img, originalFilename) {
     );
     return;
   }
-  console.log("Cropped dimensions:", cropData.width, cropData.height);
   updateStatus("Creating final image...", true);
 
   // 2. Create Final Image (using current settings)
@@ -610,8 +606,6 @@ function downloadImage(originalFilename) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
-  console.log(`Image download triggered: ${link.download}`);
 }
 
 // --- Initial UI Setup ---
