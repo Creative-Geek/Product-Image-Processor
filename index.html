@@ -73,10 +73,20 @@
                 max="2048"
                 step="16"
               />
+              <input
+                type="number"
+                id="final-size-input"
+                min="10"
+                max="10000"
+                step="16"
+                class="number-input"
+              />
+              <span id="final-size-error" class="error-message" style="display: none;"></span>
               <button
                 class="reset-button"
                 data-setting="finalSize"
                 aria-label="Reset Size"
+                style="display: none"
               >
                 <span class="material-symbols-rounded">restart_alt</span>
               </button>
@@ -123,6 +133,17 @@
               </button>
             </div>
           </div>
+
+          <!-- Automatic Download Toggle -->
+          <div class="setting-item">
+            <div class="input-group">
+              <label for="auto-download">Automatic Download:</label>
+              <label class="switch">
+                <input type="checkbox" id="auto-download" checked />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -139,6 +160,8 @@
       height="500"
       style="display: none"
     ></canvas>
+
+    <button id="download-button" class="md-button">Download Image</button>
 
     <script src="script.js"></script>
   </body>
