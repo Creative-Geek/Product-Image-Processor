@@ -21,7 +21,12 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Product Image Processor</h1>
+    <header class="app-header">
+      <h1>Product Image Processor</h1>
+      <button id="settings-button" class="md-icon-button" aria-label="Settings">
+        <span class="material-symbols-rounded">settings</span>
+      </button>
+    </header>
     <p>Drop your product image (with a white background) below.</p>
 
     <div id="drop-zone">
@@ -42,7 +47,77 @@
       <p class="paste-hint">or press Ctrl+V to paste an image</p>
     </div>
 
-    <div id="status">Waiting for image...</div>
+    <div id="status">Preview will appear here</div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay">
+      <div id="settings-modal" class="modal-dialog">
+        <header class="modal-header">
+          <h2>Settings</h2>
+          <button
+            id="close-settings-button"
+            class="md-icon-button"
+            aria-label="Close Settings"
+          >
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </header>
+        <div class="modal-content">
+          <div class="setting-item">
+            <label for="final-width">Final Width (px):</label>
+            <div class="input-group">
+              <input type="number" id="final-width" min="100" step="10" />
+              <button
+                class="reset-button"
+                data-setting="finalWidth"
+                aria-label="Reset Width"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-item">
+            <label for="final-height">Final Height (px):</label>
+            <div class="input-group">
+              <input type="number" id="final-height" min="100" step="10" />
+              <button
+                class="reset-button"
+                data-setting="finalHeight"
+                aria-label="Reset Height"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-item">
+            <label for="margin-size">Margin (px):</label>
+            <div class="input-group">
+              <input type="number" id="margin-size" min="0" step="10" />
+              <button
+                class="reset-button"
+                data-setting="marginSize"
+                aria-label="Reset Margin"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-item">
+            <label for="background-color">Background Color:</label>
+            <div class="input-group">
+              <input type="color" id="background-color" />
+              <button
+                class="reset-button"
+                data-setting="backgroundColor"
+                aria-label="Reset Background Color"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Canvas elements used for processing (hidden) -->
     <canvas id="source-canvas" style="display: none"></canvas>

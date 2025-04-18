@@ -7,21 +7,130 @@ const croppedCanvas = document.getElementById("cropped-canvas");
 const finalCanvas = document.getElementById("final-canvas");
 const previewCanvas = document.getElementById("preview-canvas");
 const previewHeading = document.getElementById("preview-heading");
+const settingsButton = document.getElementById("settings-button");
+const settingsModalOverlay = document.getElementById("settings-modal-overlay");
+const settingsModal = document.getElementById("settings-modal");
+const closeSettingsButton = document.getElementById("close-settings-button");
+const finalWidthInput = document.getElementById("final-width");
+const finalHeightInput = document.getElementById("final-height");
+const marginSizeInput = document.getElementById("margin-size");
+const backgroundColorInput = document.getElementById("background-color");
+const resetButtonElements = document.querySelectorAll(".reset-button");
 
 const sourceCtx = sourceCanvas.getContext("2d");
 const croppedCtx = croppedCanvas.getContext("2d");
 const finalCtx = finalCanvas.getContext("2d");
 const previewCtx = previewCanvas.getContext("2d");
 
-const FINAL_SIZE = 1000;
-const MARGIN = 180;
-const TARGET_CONTENT_SIZE = FINAL_SIZE - 2 * MARGIN; // 1000 - 360 = 640
+// --- Default Settings ---
+const DEFAULT_SETTINGS = {
+  finalWidth: 1000,
+  finalHeight: 1000,
+  marginSize: 180,
+  backgroundColor: "#ffffff",
+};
 
-// Hide preview canvas initially
-previewCanvas.style.display = "none";
+// --- Settings Management ---
+let currentSettings = { ...DEFAULT_SETTINGS };
 
-// Hide the initial "Waiting for image..." message
-statusDiv.style.display = "none";
+function loadSettings() {
+  const savedSettings = localStorage.getItem("imageProcessorSettings");
+  if (savedSettings) {
+    try {
+      currentSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
+    } catch (e) {
+      console.error("Error parsing saved settings:", e);
+      // Use defaults if parsing fails
+      currentSettings = { ...DEFAULT_SETTINGS };
+    }
+  } else {
+    currentSettings = { ...DEFAULT_SETTINGS };
+  }
+  applySettingsToUI();
+  console.log("Settings loaded:", currentSettings);
+}
+
+function saveSettings() {
+  localStorage.setItem(
+    "imageProcessorSettings",
+    JSON.stringify(currentSettings)
+  );
+  console.log("Settings saved:", currentSettings);
+}
+
+function applySettingsToUI() {
+  finalWidthInput.value = currentSettings.finalWidth;
+  finalHeightInput.value = currentSettings.finalHeight;
+  marginSizeInput.value = currentSettings.marginSize;
+  backgroundColorInput.value = currentSettings.backgroundColor;
+}
+
+function updateSetting(key, value) {
+  // Basic validation
+  if (key === "finalWidth" || key === "finalHeight") {
+    value = Math.max(100, parseInt(value, 10) || DEFAULT_SETTINGS[key]);
+  } else if (key === "marginSize") {
+    value = Math.max(0, parseInt(value, 10) || DEFAULT_SETTINGS[key]);
+  } else if (key === "backgroundColor") {
+    // Basic hex color validation (allows 3, 6, 8 digits)
+    if (!/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?([0-9a-fA-F]{2})?$/.test(value)) {
+      value = DEFAULT_SETTINGS[key];
+    }
+  }
+
+  currentSettings[key] = value;
+  applySettingsToUI(); // Keep UI in sync even if validation changes value
+  saveSettings();
+}
+
+function resetSetting(key) {
+  updateSetting(key, DEFAULT_SETTINGS[key]);
+}
+
+// --- Modal Logic ---
+function openSettingsModal() {
+  applySettingsToUI(); // Ensure UI shows current settings when opened
+  settingsModalOverlay.classList.add("visible");
+}
+
+function closeSettingsModal() {
+  settingsModalOverlay.classList.remove("visible");
+}
+
+// --- Event Listeners for Settings ---
+settingsButton.addEventListener("click", openSettingsModal);
+closeSettingsButton.addEventListener("click", closeSettingsModal);
+settingsModalOverlay.addEventListener("click", (e) => {
+  // Close if clicked outside the modal dialog itself
+  if (e.target === settingsModalOverlay) {
+    closeSettingsModal();
+  }
+});
+
+finalWidthInput.addEventListener("change", (e) =>
+  updateSetting("finalWidth", e.target.value)
+);
+finalHeightInput.addEventListener("change", (e) =>
+  updateSetting("finalHeight", e.target.value)
+);
+marginSizeInput.addEventListener("change", (e) =>
+  updateSetting("marginSize", e.target.value)
+);
+backgroundColorInput.addEventListener("input", (e) =>
+  updateSetting("backgroundColor", e.target.value)
+); // Use 'input' for live color picker updates
+
+resetButtonElements.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const settingKey = e.currentTarget.dataset.setting;
+    if (settingKey) {
+      resetSetting(settingKey);
+    }
+  });
+});
+
+// Load settings on initial script load
+loadSettings();
 
 // --- Material Design Interactive Elements ---
 // Ripple effect for buttons
@@ -195,7 +304,7 @@ function processImage(img, originalFilename) {
   console.log("Cropped dimensions:", cropData.width, cropData.height);
   updateStatus("Creating final image...", true);
 
-  // 2. Create Final Image (Background + Resized/Placed Cropped Image)
+  // 2. Create Final Image (using current settings)
   createFinalImage(cropData);
 
   // 3. Draw Preview (Optional)
@@ -308,24 +417,32 @@ function cropToContent(img) {
 
 // --- Step 2: Create Final Image ---
 function createFinalImage(cropData) {
-  finalCanvas.width = FINAL_SIZE;
-  finalCanvas.height = FINAL_SIZE;
+  // Use settings from currentSettings
+  const finalWidth = currentSettings.finalWidth;
+  const finalHeight = currentSettings.finalHeight;
+  const margin = currentSettings.marginSize;
+  const backgroundColor = currentSettings.backgroundColor;
+  const targetContentWidth = finalWidth - 2 * margin;
+  const targetContentHeight = finalHeight - 2 * margin;
 
-  // Fill background with white
-  finalCtx.fillStyle = "white";
-  finalCtx.fillRect(0, 0, FINAL_SIZE, FINAL_SIZE);
+  finalCanvas.width = finalWidth;
+  finalCanvas.height = finalHeight;
 
-  // Calculate scaling factor to fit cropped image within target area (640x640)
+  // Fill background with the selected color
+  finalCtx.fillStyle = backgroundColor;
+  finalCtx.fillRect(0, 0, finalWidth, finalHeight);
+
+  // Calculate scaling factor to fit cropped image within target area
   const scale = Math.min(
-    TARGET_CONTENT_SIZE / cropData.width,
-    TARGET_CONTENT_SIZE / cropData.height
+    targetContentWidth / cropData.width,
+    targetContentHeight / cropData.height
   );
 
   // Calculate dimensions and position to draw the scaled image
   const drawWidth = cropData.width * scale;
   const drawHeight = cropData.height * scale;
-  const drawX = MARGIN + (TARGET_CONTENT_SIZE - drawWidth) / 2; // Center horizontally within the margin
-  const drawY = MARGIN + (TARGET_CONTENT_SIZE - drawHeight) / 2; // Center vertically within the margin
+  const drawX = margin + (targetContentWidth - drawWidth) / 2; // Center horizontally
+  const drawY = margin + (targetContentHeight - drawHeight) / 2; // Center vertically
 
   console.log(
     `Drawing cropped image onto final canvas at: x=${drawX.toFixed(
