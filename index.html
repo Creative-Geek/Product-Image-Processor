@@ -21,15 +21,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Product Image Processor</h1>
+    <header class="app-header">
+      <h1>Product Image Processor</h1>
+      <button id="settings-button" class="md-icon-button" aria-label="Settings">
+        <span class="material-symbols-rounded">settings</span>
+      </button>
+    </header>
     <p>Drop your product image (with a white background) below.</p>
 
     <div id="drop-zone">
-      <span
-        class="material-symbols-rounded"
-        style="font-size: 36px; margin-bottom: 12px"
-        >upload_file</span
-      >
+      <span class="material-symbols-rounded drop-icon">upload_file</span>
       <p>Drag & Drop Image Here</p>
       <p>or</p>
       <input
@@ -42,7 +43,89 @@
       <p class="paste-hint">or press Ctrl+V to paste an image</p>
     </div>
 
-    <div id="status">Waiting for image...</div>
+    <div id="status" style="display: none">Processing...</div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay">
+      <div id="settings-modal" class="modal-dialog">
+        <header class="modal-header">
+          <h2>Settings</h2>
+          <button
+            id="close-settings-button"
+            class="md-icon-button"
+            aria-label="Close Settings"
+          >
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </header>
+        <div class="modal-content">
+          <!-- Final Size Slider -->
+          <div class="setting-item slider-item">
+            <div class="slider-label-container">
+              <label for="final-size">Final Size (px):</label>
+              <span id="final-size-value" class="slider-value">1000 px</span>
+            </div>
+            <div class="input-group slider-container">
+              <input
+                type="range"
+                id="final-size"
+                min="512"
+                max="2048"
+                step="16"
+              />
+              <button
+                class="reset-button"
+                data-setting="finalSize"
+                aria-label="Reset Size"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Margin Percentage Slider -->
+          <div class="setting-item slider-item">
+            <div class="slider-label-container">
+              <label for="margin-percentage">Margin (%):</label>
+              <span id="margin-percentage-value" class="slider-value"
+                >18 %</span
+              >
+            </div>
+            <div class="input-group slider-container">
+              <input
+                type="range"
+                id="margin-percentage"
+                min="0"
+                max="50"
+                step="1"
+              />
+              <button
+                class="reset-button"
+                data-setting="marginPercentage"
+                aria-label="Reset Margin"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Background Color Picker -->
+          <div class="setting-item">
+            <label for="background-color">Background Color:</label>
+            <div class="input-group">
+              <input type="color" id="background-color" />
+              <button
+                class="reset-button"
+                data-setting="backgroundColor"
+                aria-label="Reset Background Color"
+              >
+                <span class="material-symbols-rounded">restart_alt</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Canvas elements used for processing (hidden) -->
     <canvas id="source-canvas" style="display: none"></canvas>
@@ -50,7 +133,12 @@
     <canvas id="final-canvas" style="display: none"></canvas>
 
     <h2 id="preview-heading" style="display: none">Preview</h2>
-    <canvas id="preview-canvas" width="500" height="500"></canvas>
+    <canvas
+      id="preview-canvas"
+      width="500"
+      height="500"
+      style="display: none"
+    ></canvas>
 
     <script src="script.js"></script>
   </body>
