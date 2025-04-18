@@ -45,7 +45,7 @@ A simple web application for quickly processing product images for e-commerce we
 
 - Preparing product photos for e-commerce platforms (Shopify, WooCommerce, Etsy, etc.)
 - Creating consistently sized and margined images for online marketplaces or catalogs.
-- Quickly batch-processing images without complex photo editing software.
+- Quickly process images without complex photo editing software.
 
 ## Browser Compatibility
 
